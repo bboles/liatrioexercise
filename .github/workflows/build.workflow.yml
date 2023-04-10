@@ -1,0 +1,89 @@
+name: Build Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+
+env:
+  IMAGE: testapp
+  GCP_ARTIFACT_REPO: liatrioexercise-repo
+  GCP_ARTIFACT_HOST: us-west2-docker.pkg.dev
+
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Determine Semantic Version
+        id: semver
+        uses: paulhatch/semantic-version@v5
+        with:
+          # The prefix to use to identify tags
+          tag_prefix: "v"
+          # A string which, if present in a git commit, indicates that a change represents a
+          # major (breaking) change, supports regular expressions wrapped with '/'
+          major_pattern: "(MAJOR)"
+          # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+          minor_pattern: "(MINOR)"
+          # A string to determine the format of the version output
+          format: "${major}.${minor}.${patch}"
+          # Optional path to check for changes. If any changes are detected in the path the
+          # 'changed' output will true. Enter multiple paths separated by spaces.
+          change_path: "container/"
+          # Named version, will be used as suffix for name version tag
+          # namespace: project-b
+          # Indicate whether short tags like 'v1' should be supported. If false only full
+          # tags like 'v1.0.0' will be recognized.
+          # short_tags: true
+          # If this is set to true, *every* commit will be treated as a new version.
+          bump_each_commit: true
+
+      - name: Setup GCP Auth
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: 'access_token'
+          workload_identity_provider: 'projects/830061839325/locations/global/workloadIdentityPools/ghauth-pool'
+          service_account: 'githubactionssvc@liatrioexercise.iam.gserviceaccount.com'
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Configure Docker Auth
+        run: |
+          gcloud --quiet auth configure-docker ${GCP_ARTIFACT_HOST}
+
+      - name: Build Container
+        run: |
+          docker build -t "${IMAGE}" .
+
+      - name: Setup GCP Repo Variable
+        run: |
+          echo "FULL_GCP_REPO_PATH=${GCP_ARTIFACT_HOST}/${{ secrets.GCP_PROJECT_ID }}/${GCP_ARTIFACT_REPO}" >> $GITHUB_ENV
+
+      - name: Add Tags
+        run: |
+          docker tag "${IMAGE}:latest" "${FULL_GCP_REPO_PATH}/${IMAGE}:latest"
+          docker tag "${IMAGE}:latest" "${FULL_GCP_REPO_PATH}/${IMAGE}:gitsha${GITHUB_SHA}"
+          docker tag "${IMAGE}:latest" "${FULL_GCP_REPO_PATH}/${IMAGE}:run${GITHUB_RUN_NUMBER}"
+          docker tag "${IMAGE}:latest" "${FULL_GCP_REPO_PATH}/${IMAGE}:v${{ steps.semver.outputs.version }}"
+
+      - name: Publish Image To Repo
+        run: |
+          docker push "${FULL_GCP_REPO_PATH}/${IMAGE}:latest"
+          docker push "${FULL_GCP_REPO_PATH}/${IMAGE}:gitsha${GITHUB_SHA}"
+          docker push "${FULL_GCP_REPO_PATH}/${IMAGE}:run${GITHUB_RUN_NUMBER}"
+          docker push "${FULL_GCP_REPO_PATH}/${IMAGE}:v${{ steps.semver.outputs.version }}"
