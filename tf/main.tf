@@ -2,8 +2,8 @@ terraform {
   # With this backend configuration we are telling Terraform that the
   # created state should be saved in some Google Cloud Bucket with some prefix.
   backend "gcs" {
-    bucket      = "liatrioexercise-state"
-    prefix      = "terraform/state"
+    bucket = "liatrioexercise-state"
+    prefix = "terraform/state"
   }
 }
 
