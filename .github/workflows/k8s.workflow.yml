@@ -34,6 +34,7 @@ jobs:
 
       - name: Generate credentials for cluster access
         run: |
+          gcloud components install gke-gcloud-auth-plugin
           gcloud container clusters get-credentials liatrioexercise-gke --region=us-west2
 
       - name: Deploy manifests
