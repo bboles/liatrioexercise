@@ -71,7 +71,7 @@ jobs:
 
       - name: Build Container
         run: |
-          docker build -t "${IMAGE}" .
+          docker build -t "${IMAGE}" container/
 
       - name: Setup GCP Repo Variable
         run: |
