@@ -37,10 +37,12 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
 
       - name: Generate token for Terraform
-        run: export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+        run: |
+          export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+          echo "${GOOGLE_OAUTH_ACCESS_TOKEN}" >> $GITHUB_ENV
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
