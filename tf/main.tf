@@ -2,9 +2,8 @@ terraform {
   # With this backend configuration we are telling Terraform that the
   # created state should be saved in some Google Cloud Bucket with some prefix.
   backend "gcs" {
-    bucket      = "liatrioexercise-state"
-    prefix      = "terraform/state"
-    credentials = "terraform-sa.json"
+    bucket = "liatrioexercise-state"
+    prefix = "terraform/state"
   }
 }
 
@@ -34,3 +33,16 @@ resource "google_project_service" "artifactregistry" {
   service            = "artifactregistry.googleapis.com"
   disable_on_destroy = false
 }
+# Enable the Cloud Resource Manager API.
+resource "google_project_service" "crm" {
+  project            = var.project_name
+  service            = "cloudresourcemanager.googleapis.com"
+  disable_on_destroy = false
+}
+# Enable the Service Usage API.
+resource "google_project_service" "service_usage" {
+  project            = var.project_name
+  service            = "serviceusage.googleapis.com"
+  disable_on_destroy = false
+}
+
