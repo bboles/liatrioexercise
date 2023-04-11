@@ -25,9 +25,9 @@ jobs:
         id: 'auth'
         uses: google-github-actions/auth@v1
         with:
-          token_format: 'access_token'
+          create_credentials_file: 'true'
           workload_identity_provider: 'projects/830061839325/locations/global/workloadIdentityPools/ghauth-pool/providers/ghauth-provider'
-          service_account: 'terraformsvc@liatrioexercise.iam.gserviceaccount.com'
+          service_account: 'githubactionssvc@liatrioexercise.iam.gserviceaccount.com'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
