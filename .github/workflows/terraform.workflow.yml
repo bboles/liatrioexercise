@@ -29,9 +29,15 @@ jobs:
         id: 'auth'
         uses: google-github-actions/auth@v1
         with:
-          create_credentials_file: 'true'
+          token_format: 'access_token'
           workload_identity_provider: 'projects/830061839325/locations/global/workloadIdentityPools/ghauth-pool/providers/ghauth-provider'
           service_account: 'githubactionssvc@liatrioexercise.iam.gserviceaccount.com'
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Generate token for Terraform
+        run: export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
