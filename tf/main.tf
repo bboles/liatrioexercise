@@ -39,3 +39,10 @@ resource "google_project_service" "crm" {
   service            = "cloudresourcemanager.googleapis.com"
   disable_on_destroy = false
 }
+# Enable the Service Usage API.
+resource "google_project_service" "service_usage" {
+  project            = var.project_name
+  service            = "serviceusage.googleapis.com"
+  disable_on_destroy = false
+}
+
