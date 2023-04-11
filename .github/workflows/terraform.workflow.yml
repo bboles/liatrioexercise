@@ -40,9 +40,6 @@ jobs:
         run: |
           echo "GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
 
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
