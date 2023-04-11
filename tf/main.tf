@@ -4,7 +4,6 @@ terraform {
   backend "gcs" {
     bucket      = "liatrioexercise-state"
     prefix      = "terraform/state"
-    credentials = "terraform-sa.json"
   }
 }
 
@@ -32,5 +31,11 @@ resource "google_project_service" "container" {
 resource "google_project_service" "artifactregistry" {
   project            = var.project_name
   service            = "artifactregistry.googleapis.com"
+  disable_on_destroy = false
+}
+# Enable the Cloud Resource Manager API.
+resource "google_project_service" "crm" {
+  project            = var.project_name
+  service            = "cloudresourcemanager.googleapis.com"
   disable_on_destroy = false
 }
