@@ -15,7 +15,7 @@ resource "google_service_account" "sa" {
 
 resource "google_project_iam_binding" "sabind" {
   project = var.project_name
-  role    = "roles/artifactregistry.writer"
+  role    = "roles/editor"
 
   members = [
     "serviceAccount:${google_service_account.sa.email}"
