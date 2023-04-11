@@ -1,4 +1,4 @@
-name: "Deploy to Kubernets"
+name: "Deploy to Kubernetes"
 
 on:
   push:
