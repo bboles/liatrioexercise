@@ -38,8 +38,7 @@ jobs:
 
       - name: Generate token for Terraform
         run: |
-          export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
-          echo "${GOOGLE_OAUTH_ACCESS_TOKEN}" >> $GITHUB_ENV
+          echo "GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
