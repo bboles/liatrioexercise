@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: testapp
+  template:
+    metadata:
+      labels:
+        run: testapp
+    spec:
+      containers:
+        - name: testapp
+          image: us-west2-docker.pkg.dev/liatrioexercise/liatrioexercise-repo/testapp:v0.0.4
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2000M
+            requests:
+              cpu: "500m"
+              memory: 1000M
