@@ -1,0 +1,41 @@
+name: "Deploy to Kubernets"
+
+on:
+  push:
+    workflow_dispatch:
+    branches:
+      - main
+    paths:
+      - k8s/**
+
+
+jobs:
+  deploy:
+    name: "k8s Deployment"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: "write"
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup GCP Auth
+        id: 'auth'
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: 'projects/830061839325/locations/global/workloadIdentityPools/ghauth-pool/providers/ghauth-provider'
+          service_account: 'githubactionssvc@liatrioexercise.iam.gserviceaccount.com'
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Generate credentials for cluster access
+        run: |
+          gcloud container clusters get-credentials liatrioexercise-gke --region=us-west2
+
+      - name: Deploy manifests
+        run: |
+          k apply -f k8s/*
