@@ -9,6 +9,7 @@ RUN apt-get update && \
 
 ENV PYTHONUNBUFFERED True
 ENV APP_HOME /app
+ENV PORT 8080
 WORKDIR $APP_HOME
 COPY app.py /app
 
@@ -17,4 +18,4 @@ COPY app.py /app
 # cores, increase the number of workers to be equal to the cores available.
 # Timeout is set to 0 to disable the timeouts of the workers to allow GKE to
 # handle instance scaling.
-CMD exec gunicorn --log-level=debug --bind :3000 --workers 1 --threads 8 --timeout 0 --chdir $APP_HOME app:flask_app
+CMD exec gunicorn --log-level=debug --bind :$PORT --workers 1 --threads 8 --timeout 0 --chdir $APP_HOME app:flask_app
