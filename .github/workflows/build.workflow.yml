@@ -75,7 +75,7 @@ jobs:
 
       - name: Setup GCP Repo Variable
         run: |
-          echo "FULL_GCP_REPO_PATH=${GCP_ARTIFACT_HOST}/${{ secrets.GCP_PROJECT_ID }}/${GCP_ARTIFACT_REPO}" >> $GITHUB_ENV
+          echo "FULL_GCP_REPO_PATH=${GCP_ARTIFACT_HOST}/liatrioexercise/${GCP_ARTIFACT_REPO}" >> $GITHUB_ENV
 
       - name: Add Tags
         run: |
